@@ -1,0 +1,9 @@
+& .footer-container {
+    width: 100%;
+    @include position;
+    margin-top: 30px;
+    
+    & footer {
+      text-align: center;
+    }
+  }

@@ -1,0 +1,31 @@
+& .top-container {
+  width: 100%;
+  @include position;
+
+  & .topBar {
+    width: 90%;
+    @include position(center, space-between);
+    @include sm{
+        width: 95%;
+    } 
+
+    & span.logo {
+      & span.first {
+        font-size: 40px;
+        font-family: cursive;
+      }
+      & span.second {
+        font-size: 20px;
+        color: $secondary;
+      }
+    }
+
+    & span.mode{
+        & .darkmode{
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+  }
+}
