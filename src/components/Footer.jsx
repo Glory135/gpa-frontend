@@ -3,7 +3,7 @@ import React from "react";
 const Footer = () => {
   return (
     <footer>
-      2023 &copy {" "}
+      2023 &copy; {" "}
       <a target="__blank" href="https://github.com/Toluwanimi-py">
         Tolu.py
       </a>{" "}
