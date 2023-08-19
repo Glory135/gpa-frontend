@@ -16,7 +16,7 @@ function App() {
 	const [gradeState, setGradeState] = useState('A');
 	const [unitState, setUnitState] = useState(5);
 	const [calculating, setCalculating] = useState(false);
-	const [response, setResponse] = useState('');
+	const [response, setResponse] = useState(null);
 	const [lvl, setlvl] = useState(100);
 	const [semester, setSemester] = useState('First');
 	const [unitCustom, setUnitCustom] = useState(false);
@@ -29,6 +29,7 @@ function App() {
 		) : false
 		if (sem_data) {
 			setCourses(sem_data.data);
+			setResponse(sem_data.gp)
 		}
 		else {
 			setCourses([]);
@@ -41,7 +42,7 @@ function App() {
 			const uid = newCourses.length + 1;
 			newCourses.push({ id: uid, code, grade, unit });
 			setCourses(newCourses);
-			setResponse('');
+			setResponse(null);
 			setCodeState('');
 			setGradeState('A');
 			setUnitState('5');
@@ -53,12 +54,12 @@ function App() {
 			return single.id !== id;
 		});
 		setCourses(newArr);
-		setResponse('');
+		setResponse(null);
 	};
 
 	const handleClear = () => {
 		setCourses([]);
-		setResponse('');
+		setResponse(null);
 		setCodeState('');
 		setGradeState('A');
 		setUnitState('5');
@@ -80,7 +81,7 @@ function App() {
 			.catch((err) => {
 				console.log(err);
 				setCalculating(false);
-				setResponse('ERROR!! clear inputs and try again!');
+				setResponse(null);
 			});
 	};
 
@@ -88,16 +89,13 @@ function App() {
 		setSaving(true)
 		// check if lvl is already saved in LS
 		const saved_data = JSON.parse(localStorage.getItem(`${lvl}-lvl`));
-		// get the current GP
-		const sem_gp_arr = response.split(' ');
-		const sem_gp = sem_gp_arr[sem_gp_arr.length - 1];
 
 		// function to return semester data
 		const sem_data = (sem) => ({
 			id: sem.length + 1 || 0,
 			semester,
 			data: courses,
-			gp: parseFloat(sem_gp),
+			gp: parseFloat(response),
 		})
 
 		let lvl_data = {
@@ -157,9 +155,7 @@ function App() {
 			setSaving(false)
 		}, 1000);
 	};
-
 	
-
 	return (
 		<>
 			<main
@@ -361,7 +357,7 @@ function App() {
 							<>
 								<div className='response-con'>
 									{' '}
-									<h3>{response}</h3>
+									<h3>Your GP Is: {response}</h3>
 								</div>
 								<div className='save-con'>
 									<button

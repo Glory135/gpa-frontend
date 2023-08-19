@@ -67,7 +67,7 @@ const SavedBreadcrumb = ({ darkMode, setSemester, setlvl }) => {
 													<div onClick={() => { setlvl(singlelvl.lvl); setSemester('First') }} className='first'>
 														<div className='lvl'>{singlelvl.lvl} lvl</div>
 														{/* <div className='gp'>{singlelvl.gpa} GPA</div> */}
-														<div className='gp'>{singlelvl.GP} GPA</div>
+														<div className='gp'>{singlelvl.GP.toFixed(2)} GPA</div>
 													</div>
 													<div onClick={() => handleDelete(singlelvl.lvl)} className='second'>
 														<HighlightOffIcon />
