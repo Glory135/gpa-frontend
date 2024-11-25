@@ -8,6 +8,83 @@ import EachCourse from './components/EachCourse';
 import axios from 'axios';
 import SavedBreadcrumb from './components/SavedBreadcrumb';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { calCGP } from './utils';
+
+const one = {
+	lvl: 100,
+	semesters: [
+		{
+			id: 1,
+			semester: 'First',
+			data: [
+				{ id: 1, code: 'Bio 101', grade: 'B', unit: '4' },
+				{ id: 2, code: 'Chem 101', grade: 'C', unit: '4' },
+				{ id: 3, code: 'CSC 101', grade: 'B', unit: '3' },
+				{ id: 4, code: 'GST 111', grade: 'B', unit: '2' },
+				{ id: 5, code: 'GST 113', grade: 'B', unit: '2' },
+				{ id: 6, code: 'MAT 101', grade: 'A', unit: '3' },
+				{ id: 7, code: 'MAT 103', grade: 'A', unit: '3' },
+				{ id: 8, code: 'PHY 101', grade: 'C', unit: '3' },
+				{ id: 9, code: 'PHY 107', grade: 'A', unit: '1' },
+			],
+			gp: 4,
+		},
+		{
+			id: 2,
+			semester: 'second',
+			data: [
+				{ id: 1, code: 'BIO 102', grade: 'D', unit: '4' },
+				{ id: 2, code: 'CHEM 102', grade: 'B', unit: '4' },
+				{ id: 3, code: 'CSC 102', grade: 'A', unit: '3' },
+				{ id: 4, code: 'GST 112', grade: 'A', unit: '2' },
+				{ id: 5, code: 'MATH 102', grade: 'A', unit: '3' },
+				{ id: 6, code: 'PHY 102', grade: 'A', unit: '3' },
+				{ id: 7, code: 'PHY 108', grade: 'B', unit: '1' },
+				{ id: 8, code: 'STA 106', grade: 'B', unit: '4' },
+			],
+			gp: 4.12,
+		},
+	],
+	GP: 4.0600000000000005,
+};
+const two = {
+	lvl: '200',
+	semesters: [
+		{
+			id: 1,
+			semester: 'first',
+			data: [
+				{ id: 1, code: 'csc 201', grade: 'A', unit: '3' },
+				{ id: 2, code: 'csc203', grade: 'A', unit: '3' },
+				{ id: 3, code: 'csc205', grade: 'A', unit: '2' },
+				{ id: 4, code: 'csc207', grade: 'B', unit: '2' },
+				{ id: 5, code: 'csc209', grade: 'A', unit: '3' },
+				{ id: 6, code: 'mat201', grade: 'A', unit: '2' },
+				{ id: 7, code: 'mat203', grade: 'A', unit: '2' },
+				{ id: 8, code: 'gst115', grade: 'A', unit: '2' },
+				{ id: 9, code: 'esc211', grade: 'B', unit: '2' },
+				{ id: 10, code: 'sta0201', grade: 'A', unit: '3' },
+			],
+			gp: 4.83,
+		},
+		{
+			id: 2,
+			semester: 'second',
+			data: [
+				{ id: 1, code: 'csc202', grade: 'A', unit: '3' },
+				{ id: 2, code: 'csc204', grade: 'A', unit: '2' },
+				{ id: 3, code: 'csc208', grade: 'A', unit: '2' },
+				{ id: 4, code: 'csc210', grade: 'A', unit: '3' },
+				{ id: 5, code: 'mat202', grade: 'A', unit: '2' },
+				{ id: 6, code: 'mat204', grade: 'A', unit: '2' },
+				{ id: 7, code: 'gst114', grade: 'B', unit: '2' },
+				{ id: 8, code: 'gst116', grade: 'B', unit: '2' },
+			],
+			gp: 4.78,
+		},
+	],
+	GP: 4.805,
+};
 
 function App() {
 	const [darkmode, setDarkmode] = useState(false);
@@ -20,21 +97,22 @@ function App() {
 	const [lvl, setlvl] = useState(100);
 	const [semester, setSemester] = useState('First');
 	const [unitCustom, setUnitCustom] = useState(false);
-	const [saving, setSaving] = useState(false)
+	const [saving, setSaving] = useState(false);
 
 	useEffect(() => {
 		const current_lvl = JSON.parse(localStorage.getItem(`${lvl}-lvl`));
-		const sem_data = current_lvl ? current_lvl.semesters.find((i) =>
-			i.semester.toLowerCase() === semester.toLowerCase()
-		) : false
+		const sem_data = current_lvl
+			? current_lvl.semesters.find(
+					(i) => i.semester.toLowerCase() === semester.toLowerCase()
+			  )
+			: false;
 		if (sem_data) {
 			setCourses(sem_data.data);
-			setResponse(sem_data.gp)
-		}
-		else {
+			setResponse(sem_data.gp);
+		} else {
 			setCourses([]);
 		}
-	}, [lvl, semester])
+	}, [lvl, semester]);
 
 	const addCourse = (code, grade, unit) => {
 		if (codeState) {
@@ -79,14 +157,13 @@ function App() {
 				setResponse(res.data.data);
 			})
 			.catch((err) => {
-				console.log(err);
 				setCalculating(false);
 				setResponse(null);
 			});
 	};
 
 	const saveData = () => {
-		setSaving(true)
+		setSaving(true);
 		// check if lvl is already saved in LS
 		const saved_data = JSON.parse(localStorage.getItem(`${lvl}-lvl`));
 
@@ -96,12 +173,12 @@ function App() {
 			semester,
 			data: courses,
 			gp: parseFloat(response),
-		})
+		});
 
 		let lvl_data = {
 			lvl,
 			semesters: [],
-			GP: 0
+			GP: 0,
 		};
 
 		// if lvl does not exist on DB create one
@@ -114,48 +191,47 @@ function App() {
 		// if lvl exists in LS check if semester is the same
 		else {
 			// getting and checking semester data
-			const currrent_sem = saved_data.semesters
-			const checkSem = currrent_sem.find((i) => i.semester === semester)
+			const currrent_sem = saved_data.semesters;
+			const checkSem = currrent_sem.find((i) => i.semester === semester);
 			// if semester does not exist push and update the LS data with current semester
 			if (!checkSem) {
 				let updated_lvl = {
 					...saved_data,
-					semesters: [
-						...currrent_sem,
-						sem_data(currrent_sem)
-					]
-				}
+					semesters: [...currrent_sem, sem_data(currrent_sem)],
+				};
 				localStorage.setItem(`${lvl}-lvl`, JSON.stringify(updated_lvl));
 				setTimeout(() => {
-					setSaving(false)
+					setSaving(false);
 				}, 2000);
-			}
-			else {
+			} else {
 				let updated_lvl = {
 					...saved_data,
 					semesters: [
-						...(currrent_sem.map((i) => {
+						...currrent_sem.map((i) => {
 							if (i.semester === semester) {
-								i.data = courses
+								i.data = courses;
 							}
-							return i
-						}))
-					]
-				}
+							return i;
+						}),
+					],
+				};
 				// update data
 				localStorage.setItem(`${lvl}-lvl`, JSON.stringify(updated_lvl));
 			}
 		}
+
+		// after data has been saved we calc the cgpa
 		const new_saved_data = JSON.parse(localStorage.getItem(`${lvl}-lvl`));
-		const semCumGP = new_saved_data.semesters.reduce((acc, i) => { return acc + i.gp }, 0)
-		const lvlGP = semCumGP / new_saved_data.semesters.length;
-		new_saved_data.GP = lvlGP
+		const lvlGP = calCGP(new_saved_data.semesters);
+
+		new_saved_data.GP = lvlGP;
 		localStorage.setItem(`${lvl}-lvl`, JSON.stringify(new_saved_data));
+
 		setTimeout(() => {
-			setSaving(false)
+			setSaving(false);
 		}, 1000);
 	};
-	
+
 	return (
 		<>
 			<main
@@ -171,7 +247,8 @@ function App() {
 					<SavedBreadcrumb
 						darkMode={darkmode}
 						setlvl={setlvl}
-						setSemester={setSemester} />
+						setSemester={setSemester}
+					/>
 					<div className='main-body-top'>
 						<div className='lvl-con'>
 							<h3>Level:</h3>
@@ -282,9 +359,13 @@ function App() {
 										placeholder='enter custom unit...'
 										className='custon-unit-input'
 										value={unitState}
-										onChange={(e) => setUnitState(e.target.value)}
+										onChange={(e) =>
+											setUnitState(e.target.value)
+										}
 									/>
-									<RemoveCircleOutlineIcon onClick={() => setUnitCustom(false)} />
+									<RemoveCircleOutlineIcon
+										onClick={() => setUnitCustom(false)}
+									/>
 								</div>
 							) : (
 								<select
@@ -297,20 +378,17 @@ function App() {
 									value={unitState}
 									onChange={(e) => {
 										if (e.target.value === 'custom') {
-											setUnitCustom(true)
+											setUnitCustom(true);
 										} else {
-											setUnitState(e.target.value)
+											setUnitState(e.target.value);
 										}
-									}
-									}>
+									}}>
 									<option value={5}>5</option>
 									<option value={4}>4</option>
 									<option value={3}>3</option>
 									<option value={2}>2</option>
 									<option value={1}>1</option>
-									<option value='custom'>
-										Custom
-									</option>
+									<option value='custom'>Custom</option>
 								</select>
 							)}
 						</label>
@@ -335,16 +413,13 @@ function App() {
 							</span>
 						</div>
 
-						{
-							courses.map((singleCourse, index) => (
-								<EachCourse
-									data={singleCourse}
-									key={index}
-									filter={filterCourses}
-								/>
-							))
-						}
-
+						{courses.map((singleCourse, index) => (
+							<EachCourse
+								data={singleCourse}
+								key={index}
+								filter={filterCourses}
+							/>
+						))}
 
 						<div className='submit-btn-con'>
 							<button
@@ -370,11 +445,9 @@ function App() {
 							</>
 						)}
 					</div>
-					{courses.length < 1 &&
-						(<div className="noData">
-							No Course Added!!
-						</div>)
-					}
+					{courses.length < 1 && (
+						<div className='noData'>No Course Added!!</div>
+					)}
 				</div>
 				<div className='footer-container'>
 					<Footer />
